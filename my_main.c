@@ -82,6 +82,41 @@
   jdyrlandweaver
   ====================*/
 void first_pass() {
+
+  int i;
+  short frame_check, vary_check, name_check;
+
+  frame_check = vary_check = name_check = 0;
+
+  for( i=0; i<lastop; i++ ) {
+
+    switch ( op[i].opcode ) {
+      
+    case FRAMES:
+      num_frames = op[i].op.frames.num_frames;
+      frame_check = 1;
+      break;
+      
+    case BASENAME:
+      strncpy( name, op[i].op.basename.p->name, sizeof( name ) );
+      name_check = 1;
+      break;
+
+    case VARY:
+      vary_check = 1;
+      break;
+    }
+  }
+
+  if ( vary_check && !frame_check ) {
+    printf( "Vary command found without setting number of frames!\n");
+    exit( 0 );
+  }
+  
+  else if ( frame_check && !name_check ){
+    printf("Animation code found but basename was not set, using \"frame\" as basename\n" );
+    strncpy( name, "frame", sizeof( name ) );
+  }
 }
 
 /*======== struct vary_node ** second_pass()) ==========
@@ -107,6 +142,85 @@ void first_pass() {
   jdyrlandweaver
   ====================*/
 struct vary_node ** second_pass() {
+  
+  int i, k;
+  double start_frame, end_frame, start_value, end_value;
+  int count;
+  char knob_names[50][128];
+  short found;
+  struct vary_node ** knobs;
+  struct vary_node * new_node;
+  struct vary_node * curr;
+
+  knobs = (struct vary_node **)calloc( num_frames, 
+				       sizeof( struct vary_node * ) );
+
+  for ( i=0; i<lastop; i++ ) {
+    
+    if ( op[i].opcode == VARY ) {
+      
+      start_frame = op[i].op.vary.start_frame;
+      end_frame = op[i].op.vary.end_frame;
+      start_value = op[i].op.vary.start_val;
+      end_value = op[i].op.vary.end_val;
+      
+      if ( start_frame < 0 || 
+	   end_frame >= num_frames || 
+	   end_frame < start_frame ) {
+
+	printf( "Invalid vary command for knob: %s\n", 
+		op[i].op.vary.p->name );
+	exit( 0 );
+      }
+	
+      //set knob values for each frame
+      for ( k=0; k < num_frames; k++ ){
+	
+	found = 0;
+	new_node = knobs[k];
+	while ( new_node ) {
+	  
+	  if ( strcmp( new_node->name, op[i].op.vary.p->name) == 0 ) {
+	    found = 1;
+	    break;
+	  }
+	  
+	  new_node = new_node->next;
+	}
+	
+	if ( !found ) {
+	  new_node = (struct vary_node *)calloc(1, sizeof( struct vary_node));
+	  strncpy( new_node->name, op[i].op.vary.p->name, 
+		   sizeof( new_node-> name ) );
+	  new_node->next = knobs[k];
+	  knobs[k] = new_node;
+	}
+
+	//if frame is before the knob application,
+	//set knob to the start value
+	if  ( !found && k < start_frame )  {
+	  new_node->value = start_value;
+	}
+	//if frame is after the knob, set knob to end value
+	else if ( !found && k > end_frame ) 
+	  new_node->value = end_value;
+
+	else if ( k >= start_frame && k <= end_frame ) {
+	  if ( start_value < end_value ) {
+	    new_node->value = ( k - start_frame ) *
+	      (double)(end_value - start_value) / 
+	      (double) (end_frame - start_frame) + start_value;
+	  }
+	  else 
+	    new_node->value = start_value - 
+	      ( start_frame - k ) *
+	      (double)(end_value - start_value) / 
+	      (double) (end_frame - start_frame);
+	}
+      }
+    } //end if vary found
+  } //end for loop
+  return knobs;
 }
 
 
@@ -135,9 +249,46 @@ void print_knobs() {
   }
 }
 
+/*======== void process_knobs() ==========
+Inputs:   
+Returns: 
+
+Displays the current knob values and provides
+an interface for the user to set them
+
+jdyrlandweaver
+====================*/
+void process_knobs() {
+  
+  int i;
+  double v;
+
+  if ( lastsym == 0 )
+    return;
+
+  do {
+    printf( "Knob List:\n" );
+    print_knobs();
+    printf( "Enter knob ID to set (-1 to stop): ");
+    scanf( "%d", &i );
+    
+    if ( i >= lastsym || i < -1 )
+      printf( "Invalid entry, please try again.\n" );
+    
+    else if ( i != -1 ) {
+      
+      printf( "Enter new value for %s: ", symtab[i].name );
+      scanf( "%lf", &v );
+      symtab[i].s.value = v;
+    }
+    printf("\n");
+    
+  } while ( i != -1 );
+}
+
 
 /*======== void my_main() ==========
-  Inputs:
+  Inputs:   int polygons  
   Returns: 
 
   This is the main engine of the interpreter, it should
@@ -188,10 +339,45 @@ void my_main( int polygons ) {
   g.green = 255;
   g.blue = 255;
 
+
+  first_pass();
+
+  if (num_frames == 1)
+    process_knobs();
+  else
+    knobs = second_pass();
+  
+  for ( f=0; f < num_frames; f++ ) {
+
+    s = new_stack();
+    tmp = new_matrix(4, 1000);
+    clear_screen( t );
+
+    //if there are multiple frames, set the knobs
+    if ( num_frames > 1 ) {
+      
+      vn = knobs[f];
+      while ( vn ) {
+	printf("knob: %s value:%lf\n", vn->name, vn->value);
+	set_value( lookup_symbol( vn->name ), vn->value );
+	vn = vn-> next;
+      }
+    }
     
     for (i=0;i<lastop;i++) {
   
       switch (op[i].opcode) {
+
+      case SET:
+	set_value( lookup_symbol( op[i].op.set.p->name ), 
+		   op[i].op.set.p->s.value );
+	break;
+	
+      case SETKNOBS:
+	for ( j=0; j < lastsym; j++ ) 
+	  if ( symtab[j].type == SYM_VALUE )
+	    symtab[j].s.value = op[i].op.setknobs.value;
+	break;
 
       case SPHERE:
 	add_sphere( tmp,op[i].op.sphere.d[0], //cx
@@ -246,6 +432,14 @@ void my_main( int polygons ) {
 	yval =  op[i].op.move.d[1];
 	zval = op[i].op.move.d[2];
       
+	//get knob if it exists
+	if ( op[i].op.move.p != NULL ) {
+	  knob_value = lookup_symbol( op[i].op.move.p->name )->s.value;
+	  xval = xval * knob_value;
+	  yval = yval * knob_value;
+	  zval = zval * knob_value;
+	}
+
 	transform = make_translate( xval, yval, zval );
 	//multiply by the existing origin
 	matrix_mult( s->data[ s->top ], transform );
@@ -259,6 +453,14 @@ void my_main( int polygons ) {
 	yval = op[i].op.scale.d[1];
 	zval = op[i].op.scale.d[2];
       
+	//get knob if it exists
+	if ( op[i].op.scale.p != NULL ) {
+	  knob_value = lookup_symbol( op[i].op.scale.p->name )->s.value;
+	  xval = xval * knob_value;
+	  yval = yval * knob_value;
+	  zval = zval * knob_value;
+	}
+
 	transform = make_scale( xval, yval, zval );
 	matrix_mult( s->data[ s->top ], transform );
 	//put the new matrix on the top
@@ -268,6 +470,12 @@ void my_main( int polygons ) {
 
       case ROTATE:
 	xval = op[i].op.rotate.degrees * ( M_PI / 180 );
+
+	//get knob if it exists
+	if ( op[i].op.rotate.p != NULL ) {
+	  knob_value = lookup_symbol( op[i].op.rotate.p->name )->s.value;
+	  xval = xval * knob_value;
+	}
 
 	//get the axis
 	if ( op[i].op.rotate.axis == 0 ) 
@@ -301,4 +509,13 @@ void my_main( int polygons ) {
     free_stack( s );
     free_matrix( tmp );
     //free_matrix( transform );
+ 
+    //save the image with the correct filename
+    if ( num_frames > 1 ) {
+      printf("Drawing frome: %d\n", f );
+      sprintf( frame_name, "anim/%s%03d.png", name, f );
+      save_extension( t, frame_name );
+    }
+  } //end frame loop
+
 }
