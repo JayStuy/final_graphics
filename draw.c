@@ -708,8 +708,9 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
   
   void scan_line( double x0, double y0,
 		  double x1, double y1,
-		  double x2, double y2,
+		  double x2, double y2, 
 		  screen s, color c ) {
+    
     double xt, xm, xb, yt, ym, yb, xL, xR, yL, yR;
     double d0, d1;
 

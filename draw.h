@@ -45,4 +45,9 @@ void add_torus( struct matrix * points,
 void generate_torus( struct matrix * points, 
 		     double cx, double cy, double cz, double r1, double r2, 
 			   int step );
+
+void scan_line( double x0, double y0,
+                double x1, double y1,
+                double x2, double y2,
+                screen s, color c );
 #endif
