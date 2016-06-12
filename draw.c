@@ -778,28 +778,29 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
       d0 = (double)( (double)(xt - xb) / (double)(yt - yb) );
     }
     else {
-      d0 = xt-xb;
+      d0 = xt - xb;
     }
     if ( (double)(ym - yb) > .001){
-      d1 = (double)((double)(xm-xb) / (double)(ym - yb));
+      d1 = (double)((double)(xm - xb) / (double)(ym - yb));
     } else {
-      d1 = xm-xb;
+      d1 = xm - xb;
     }
   
-    if (d1 > 9999 || d1 < -9999){
-      d1 = xm-xb;
+    if ( d1 > 9999 || d1 < -9999 ){
+      d1 = xm - xb;
     }
-    if (d0 > 9999 || d0 < -9999){
-      d0 = xt-xb;
+    if ( d0 > 9999 || d0 < -9999 ){
+      d0 = xt - xb;
     }
 
-    printf("yt is: %f\nym is: %f \nyb is: %f\n", yt, ym, yb);
-    printf("xt is: %f\nxm is: %f \nxb is: %f\n", xt, xm, xb);
+    printf( "yt: %f\nym: %f \nyb: %f\n", yt, ym, yb );
+    printf(" xt is: %f\nxm: %f \nxb: %f\n", xt, xm, xb );
   
-    printf("d0 is: %f\n", d0);
-    printf("d1 is: %f\n", d1);
+    printf(" d0: %f\n", d0 );
+    printf( "d1: %f\n", d1 );
   
-    xR = xb; xL = xb;
+    xR = xb;
+    xL = xb;
     draw_line( xL, yb, xR, yb, s, c );
   
     while ( yb <= ym ){
