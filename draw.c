@@ -54,6 +54,8 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
   for( i=0; i < polygons->lastcol-2; i+=3 ) {
 
     if ( calculate_dot( polygons, i ) < 0 ) {
+      printf("drawing\n");
+
       draw_line( polygons->m[0][i],
 		 polygons->m[1][i],
 		 polygons->m[0][i+1],
@@ -69,6 +71,12 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
 		 polygons->m[0][i],
 		 polygons->m[1][i],
 		 s, c);
+
+      scan_line( polygons->m[0][i], polygons->m[1][i],
+		 polygons->m[0][i+1], polygons->m[1][i+1],
+		 polygons->m[0][i+2], polygons->m[1][i+1],
+		 s, c );
+      printf("performed scan line\n");
     }
   }
 }
@@ -696,6 +704,119 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
 	}
       }
     }
+  }
+  
+  void scan_line( double x0, double y0,
+		  double x1, double y1,
+		  double x2, double y2,
+		  screen s, color c ) {
+    double xt, xm, xb, yt, ym, yb, xL, xR, yL, yR;
+    double d0, d1;
+
+    printf( "y0: %f y1: %f y2: %f\n", y0, y1, y2 );
+    c.blue = 200;
+    c.green = rand() % 255;
+    c.red = rand() % 255;
+
+    if ( y2 >= y1 && y2 >= y0 ) {
+      yt = y2;
+      xt = x2;
+      if ( y1 > y0 ) {
+	ym = y1;
+	xm = x1;
+	yb = y0;
+	xb = x0;
+      }
+      else {
+	ym = y0;
+	xm = x0;
+	yb = y1;
+	xb = x1;
+      }
+    }
+    else if ( y1 >= y2 && y1 >= y0 ) {
+      yt = y1;
+      xt = x1;
+      if ( y2 > y0 ) {
+	ym = y2;
+	xm = x2;
+	yb = y0;
+	xm = x0;
+      }
+      else {
+	ym = y0;
+	xm = x0;
+	yb = y2;
+	xb = x2;
+      }
+    }
+    else {
+      yt = y0;
+      xt = x0;
+      if( y1 > y2 ) {
+	ym = y1;
+	xm = x1;
+	yb = y2;
+	xb = y2;
+      }
+      else {
+	ym = y2;
+	xm = x2;
+	yb = y1;
+	xb = x1;
+      }
+    }
+    
+    yt = (int)yt;
+    xt = (int)xt;
+    ym = (int)ym;
+    xm = (int)xm;
+    yb = (int)yb;
+    xb = (int)xb;
+
+    if ( (double)(yt - yb) > .001 ) {
+      d0 = (double)( (double)(xt - xb) / (double)(yt - yb) );
+    }
+    else {
+      d0 = xt-xb;
+    }
+    if ( (double)(ym - yb) > .001){
+      d1 = (double)((double)(xm-xb) / (double)(ym - yb));
+    } else {
+      d1 = xm-xb;
+    }
+  
+    if (d1 > 9999 || d1 < -9999){
+      d1 = xm-xb;
+    }
+    if (d0 > 9999 || d0 < -9999){
+      d0 = xt-xb;
+    }
+
+    printf("yt is: %f\nym is: %f \nyb is: %f\n", yt, ym, yb);
+    printf("xt is: %f\nxm is: %f \nxb is: %f\n", xt, xm, xb);
+  
+    printf("d0 is: %f\n", d0);
+    printf("d1 is: %f\n", d1);
+  
+    xR = xb; xL = xb;
+    draw_line( xL, yb, xR, yb, s, c );
+  
+    while ( yb <= ym ){
+      xL += d0;
+      xR += d1;
+      yb += 1;
+      draw_line( xL, yb, xR, yb, s, c );
+    }
+
+    d1 = ( ( xt - xm ) / ( yt - ym ) );
+    while ( ym < yt ){
+      xL += d0;
+      xR += d1;
+      ym += 1;
+      draw_line( xL, ym, xR, ym, s, c );
+    }
+    draw_line( xL, yt, xR, yt, s, c ); 
   }
 }
 
