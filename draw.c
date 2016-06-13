@@ -811,48 +811,47 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
 void draw_lines( struct matrix * points, screen s, color c) {
 
   int i;
-
+ 
   if ( points->lastcol < 2 ) {
-
+    
     printf("Need at least 2 points to draw a line!\n");
     return;
   }
 
   for ( i = 0; i < points->lastcol - 1; i+=2 ) {
 
-    draw_line( points->m[0][i], points->m[1][i],
+    draw_line( points->m[0][i], points->m[1][i], 
 	       points->m[0][i+1], points->m[1][i+1], s, c);
     //FOR DEMONSTRATION PURPOSES ONLY
-    //draw extra pixels so points can actually be seen
+    //draw extra pixels so points can actually be seen    
     /*
-    draw_line( points->m[0][i]+1, points->m[1][i],
-           points->m[0][i+1]+1, points->m[1][i+1], s, c);
-    draw_line( points->m[0][i], points->m[1][i]+1,
-           points->m[0][i+1], points->m[1][i+1]+1, s, c);
-    draw_line( points->m[0][i]-1, points->m[1][i],
-           points->m[0][i+1]-1, points->m[1][i+1], s, c);
-    draw_line( points->m[0][i], points->m[1][i]-1,
-           points->m[0][i+1], points->m[1][i+1]-1, s, c);
-    draw_line( points->m[0][i]+1, points->m[1][i]+1,
-           points->m[0][i+1]+1, points->m[1][i+1]+1, s, c);
-    draw_line( points->m[0][i]-1, points->m[1][i]+1,
-           points->m[0][i+1]-1, points->m[1][i+1]+1, s, c);
-    draw_line( points->m[0][i]-1, points->m[1][i]-1,
-           points->m[0][i+1]-1, points->m[1][i+1]-1, s, c);
-    draw_line( points->m[0][i]+1, points->m[1][i]-1,
-           points->m[0][i+1]+1, points->m[1][i+1]-1, s, c);
-    */
-  }
+    draw_line( points->m[0][i]+1, points->m[1][i], 
+	       points->m[0][i+1]+1, points->m[1][i+1], s, c);
+    draw_line( points->m[0][i], points->m[1][i]+1, 
+	       points->m[0][i+1], points->m[1][i+1]+1, s, c);
+    draw_line( points->m[0][i]-1, points->m[1][i], 
+	       points->m[0][i+1]-1, points->m[1][i+1], s, c);
+    draw_line( points->m[0][i], points->m[1][i]-1, 
+	       points->m[0][i+1], points->m[1][i+1]-1, s, c);
+    draw_line( points->m[0][i]+1, points->m[1][i]+1, 
+	       points->m[0][i+1]+1, points->m[1][i+1]+1, s, c);
+    draw_line( points->m[0][i]-1, points->m[1][i]+1, 
+	       points->m[0][i+1]-1, points->m[1][i+1]+1, s, c);
+    draw_line( points->m[0][i]-1, points->m[1][i]-1, 
+	       points->m[0][i+1]-1, points->m[1][i+1]-1, s, c);
+    draw_line( points->m[0][i]+1, points->m[1][i]-1, 
+	       points->m[0][i+1]+1, points->m[1][i+1]-1, s, c);
+*/
+  } 	       
 }
 
-
 void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
-
+ 
   int x, y, d, dx, dy;
 
   x = x0;
   y = y0;
-
+  
   //swap points so we're always draing left to right
   if ( x0 > x1 ) {
     x = x1;
@@ -871,7 +870,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
     //slope < 1: Octant 1 (5)
     if ( dx > dy ) {
       d = dy - ( dx / 2 );
-
+  
       while ( x <= x1 ) {
 	plot(s, c, x, y);
 
@@ -907,13 +906,13 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
   }
 
   //negative slope: Octants 7, 8 (3 and 4)
-  else {
+  else { 
 
     //slope > -1: Octant 8 (4)
     if ( dx > abs(dy) ) {
 
       d = dy + ( dx / 2 );
-
+  
       while ( x <= x1 ) {
 
 	plot(s, c, x, y);
@@ -936,7 +935,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
       d =  (dy / 2) + dx;
 
       while ( y >= y1 ) {
-
+	
 	plot(s, c, x, y );
 	if ( d < 0 ) {
 	  y = y - 1;
@@ -950,32 +949,4 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
       }
     }
   }
-}void draw_lines( struct matrix * points, screen s, color c) {
-
-  int i;
-
-  if ( points->lastcol < 2 ) {
-
-    printf("Need at least 2 points to draw a line!\n");
-    return;
-  }
-
-  for ( i = 0; i < points->lastcol - 1; i+=2 ) {
-
-    draw_line( points->m[0][i], points->m[1][i],
-	       points->m[0][i+1], points->m[1][i+1], s, c);
-    //FOR DEMONSTRATION PURPOSES ONLY
-    //draw extra pixels so points can actually be seen
-    /*
-    draw_line( points->m[0][i]+1, points->m[1][i],
-           points->m[0][i+1]+1, points->m[1][i+1], s, c);
-    draw_line( points->m[0][i], points->m[1][i]+1,
-           points->m[0][i+1], points->m[1][i+1]+1, s, c);
-    draw_line( points->m[0][i]-1, points->m[1][i],
-           points->m[0][i+1]-1, points->m[1][i+1], s, c);
-    draw_line( points->m[0][i], points->m[1][i]-1,
-           points->m[0][i+1], points->m[1][i+1]-1, s, c);
-    draw_line( points->m[0][i]+1, points->m[1][i]+1,
-           points->m[0][i+1]+1, points->m[1][i+1]+1, s, c);
-    draw_line( points->m[0][i]-1, points->m[1][i]+1,
-           points->m[0][i+1]-1, points->m[1][i+1
+}
