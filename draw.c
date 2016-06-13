@@ -149,7 +149,9 @@ void scan_line( double x0, double y0,
       ym += 1;
       draw_line( xL, ym, xR, ym, s, c );
     }
+
     draw_line( xL, yt, xR, yt, s, c ); 
+
 }
 
 
@@ -191,7 +193,7 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
 
       scan_line( polygons->m[0][i], polygons->m[1][i],
 		 polygons->m[0][i+1], polygons->m[1][i+1],
-		 polygons->m[0][i+2], polygons->m[1][i+1],
+		 polygons->m[0][i+2], polygons->m[1][i+2],
 		 s, c );
       printf("performed scan line\n");
     }
