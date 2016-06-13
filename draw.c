@@ -23,7 +23,6 @@ Returns:
 Adds the vertices (x0, y0, z0), (x1, y1, z1)
 and (x2, y2, z2) to the polygon matrix. They
 define a single triangle surface.
-
 04/16/13 13:05:59
 jdyrlandweaver
 ====================*/
@@ -163,7 +162,6 @@ Returns:
 Goes through polygons 3 points at a time, drawing 
 lines connecting each points to create bounding
 triangles
-
 04/16/13 13:13:27
 jdyrlandweaver
 ====================*/
@@ -208,13 +206,10 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
 	    double r
 	    double step  
   Returns: 
-
   adds all the points for a sphere with center 
   (cx, cy) and radius r.
-
   should call generate_sphere to create the
   necessary points
-
   jdyrlandweaver
   ====================*/
 void add_sphere( struct matrix * points, 
@@ -287,12 +282,9 @@ void add_sphere( struct matrix * points,
 	    double r
 	    double step  
   Returns: 
-
   Generates all the points along the surface of a 
   sphere with center (cx, cy) and radius r
-
   Adds these points to the matrix parameter
-
   03/22/12 11:30:26
   jdyrlandweaver
   ====================*/
@@ -334,13 +326,10 @@ void generate_sphere( struct matrix * points,
 	    double r2
 	    double step  
   Returns: 
-
   adds all the points required to make a torus
   with center (cx, cy) and radii r1 and r2.
-
   should call generate_torus to create the
   necessary points
-
   03/22/12 13:34:03
   jdyrlandweaver
   ====================*/
@@ -421,12 +410,9 @@ void add_torus( struct matrix * points,
 	    double r
 	    double step  
   Returns: 
-
   Generates all the points along the surface of a 
   tarus with center (cx, cy) and radii r1 and r2
-
   Adds these points to the matrix parameter
-
   03/22/12 11:30:26
   jdyrlandweaver
   ====================*/
@@ -468,11 +454,9 @@ void generate_torus( struct matrix * points,
 	    double height
 	    double depth
   Returns: 
-
   add the points for a rectagular prism whose 
   upper-left corner is (x, y, z) with width, 
   height and depth dimensions.
-
   jdyrlandweaver
   ====================*/
 void add_box( struct matrix * polygons,
@@ -546,8 +530,6 @@ void add_box( struct matrix * polygons,
 	    double y
 	    double step  
   Returns: 
-
-
   03/16/12 19:53:52
   jdyrlandweaver
   ====================*/
@@ -586,11 +568,9 @@ Inputs:   struct matrix *points
          double step
          int type  
 Returns: 
-
 Adds the curve bounded by the 4 points passsed as parameters
 of type specified in type (see matrix.h for curve type constants)
 to the matrix points
-
 03/16/12 15:24:25
 jdyrlandweaver
 ====================*/
