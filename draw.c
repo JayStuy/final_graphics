@@ -880,7 +880,7 @@ void draw_lines( struct matrix * points, screen s, color c, struct matrix *zbuff
   } 	       
 }
 
-void draw_line(int x0, int y0, int x1, int y1, screen s, color c, struct matrix *zbuffer ) {
+void draw_line(int x0, int y0, int x1, int y1, int z0, int z1, screen s, color c, struct matrix *zbuffer ) {
  
   int x, y, z, d, dx, dy, dz;
   int steps;
