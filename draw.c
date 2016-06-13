@@ -200,35 +200,37 @@ jdyrlandweaver
   }
 }*/
 
-void draw_polygons( struct matrix *polygons, screen s, color c, struct matrix *zbuffer ) {
+void draw_polygons( struct matrix *polygons, screen s, color c, struct matrix* zbuffer ) {
   
   int i;  
   for( i=0; i < polygons->lastcol-2; i+=3 ) {
 
-    if ( calculate_dot( polygons, i ) < 0 ) {
-      printf("drawing\n");
-
+    if ( calculate_dot( polygons, i ) < 0) {
       draw_line( polygons->m[0][i],
 		 polygons->m[1][i],
+		 polygons->m[2][i],
 		 polygons->m[0][i+1],
 		 polygons->m[1][i+1],
-		 s, c, zbuffer );
+		 polygons->m[2][i+1],
+		 s, c, zbuffer);
       draw_line( polygons->m[0][i+1],
 		 polygons->m[1][i+1],
+		 polygons->m[2][i+1],
 		 polygons->m[0][i+2],
 		 polygons->m[1][i+2],
-		 s, c, zbuffer );
+		 polygons->m[2][i+2],
+		 s, c, zbuffer);
       draw_line( polygons->m[0][i+2],
 		 polygons->m[1][i+2],
+		 polygons->m[2][i+2],
 		 polygons->m[0][i],
 		 polygons->m[1][i],
-		 s, c, zbuffer );
-
-      scan_line( polygons->m[0][i], polygons->m[1][i],
-		 polygons->m[0][i+1], polygons->m[1][i+1],
-		 polygons->m[0][i+2], polygons->m[1][i+2],
-		 s, c, zbuffer );
-      printf("performed scan line\n");
+		 polygons->m[2][i],
+		 s, c, zbuffer);
+      scan_line( polygons->m[0][i],  polygons->m[1][i],  polygons->m[2][i],
+		 polygons->m[0][i+1],polygons->m[1][i+1],polygons->m[2][i+1],
+		 polygons->m[0][i+2],polygons->m[1][i+2],polygons->m[2][i+2],
+		 s, c, zbuffer);
     }
   }
 }
