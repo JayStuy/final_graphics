@@ -808,7 +808,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
   }
 }*/
 
-void draw_lines( struct matrix * points, screen s, color c) {
+void draw_lines( struct matrix * points, screen s, color c, struct matrix *zbuffer ) {
 
   int i;
  
@@ -820,8 +820,8 @@ void draw_lines( struct matrix * points, screen s, color c) {
 
   for ( i = 0; i < points->lastcol - 1; i+=2 ) {
 
-    draw_line( points->m[0][i], points->m[1][i], 
-	       points->m[0][i+1], points->m[1][i+1], s, c);
+    draw_line( points->m[0][i], points->m[1][i], points->m[2][i], 
+	       points->m[0][i+1], points->m[1][i+1], points->m[2][i+1], s, c, zbuffer );
     //FOR DEMONSTRATION PURPOSES ONLY
     //draw extra pixels so points can actually be seen    
     /*
@@ -845,9 +845,9 @@ void draw_lines( struct matrix * points, screen s, color c) {
   } 	       
 }
 
-void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
+void draw_line(int x0, int y0, int x1, int y1, screen s, color c, struct matrix *zbuffer ) {
  
-  int x, y, d, dx, dy;
+  int x, y, z, d, dx, dy, dz;
 
   x = x0;
   y = y0;
