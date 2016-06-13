@@ -38,9 +38,9 @@ void add_polygon( struct matrix *polygons,
 
 
 void scan_line( double x0, double y0,
-		  double x1, double y1,
-		  double x2, double y2, 
-		  screen s, color c ) {
+		double x1, double y1,
+		double x2, double y2, 
+		screen s, color c ) {
     
     double xt, xm, xb, yt, ym, yb, xL, xR, yL, yR;
     double d0, d1;
@@ -73,7 +73,7 @@ void scan_line( double x0, double y0,
 	ym = y2;
 	xm = x2;
 	yb = y0;
-	xm = x0;
+	xb = x0;
       }
       else {
 	ym = y0;
@@ -89,7 +89,7 @@ void scan_line( double x0, double y0,
 	ym = y1;
 	xm = x1;
 	yb = y2;
-	xb = y2;
+	xb = x2;
       }
       else {
 	ym = y2;
@@ -150,8 +150,8 @@ void scan_line( double x0, double y0,
       draw_line( xL, ym, xR, ym, s, c );
     }
     draw_line( xL, yt, xR, yt, s, c ); 
-  }
 }
+
 
 
 /*======== void draw_polygons() ==========
