@@ -100,12 +100,12 @@ void scan_line( double x0, double y0,
       }
     }
     
-    /*yt = (int)yt;
+    yt = (int)yt;
     xt = (int)xt;
     ym = (int)ym;
     xm = (int)xm;
     yb = (int)yb;
-    xb = (int)xb;*/
+    xb = (int)xb;
 
     if ( (double)(yt - yb) > .001 ) {
       d0 = (double)( (double)(xt - xb) / (double)(yt - yb) );
