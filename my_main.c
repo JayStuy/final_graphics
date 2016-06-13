@@ -51,6 +51,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <limits.h>
 #include "parser.h"
 #include "symtab.h"
 #include "y.tab.h"
@@ -401,7 +402,7 @@ void my_main( int polygons ) {
 		    step);
 	//apply the current top origin
 	matrix_mult( s->data[ s->top ], tmp );
-	draw_polygons( tmp, t, g, zbuffer, ls );
+	draw_polygons( tmp, t, g, zbuffer );
 	tmp->lastcol = 0;
 	break;
 
@@ -413,7 +414,7 @@ void my_main( int polygons ) {
 		   op[i].op.torus.r1,
 		   step);
 	matrix_mult( s->data[ s->top ], tmp );
-	draw_polygons( tmp, t, g, zbuffer, ls );
+	draw_polygons( tmp, t, g, zbuffer );
 	tmp->lastcol = 0;
 	break;
 
@@ -425,7 +426,7 @@ void my_main( int polygons ) {
 		 op[i].op.box.d1[1],
 		 op[i].op.box.d1[2]);
 	matrix_mult( s->data[ s->top ], tmp );
-	draw_polygons( tmp, t, g, zbuffer, ls );
+	draw_polygons( tmp, t, g, zbuffer );
 	tmp->lastcol = 0;
 	break;
 

@@ -50,5 +50,5 @@ void generate_torus( struct matrix * points,
 void scan_line( double x0, double y0,
                 double x1, double y1,
                 double x2, double y2,
-                screen s, color c );
+                screen s, color c, struct matrix *zbuffer );
 #endif
