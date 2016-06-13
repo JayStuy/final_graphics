@@ -167,6 +167,39 @@ triangles
 04/16/13 13:13:27
 jdyrlandweaver
 ====================*/
+/*void draw_polygons( struct matrix *polygons, screen s, color c,  ) {
+  
+  int i;  
+  for( i=0; i < polygons->lastcol-2; i+=3 ) {
+
+    if ( calculate_dot( polygons, i ) < 0 ) {
+      printf("drawing\n");
+
+      draw_line( polygons->m[0][i],
+		 polygons->m[1][i],
+		 polygons->m[0][i+1],
+		 polygons->m[1][i+1],
+		 s, c);
+      draw_line( polygons->m[0][i+1],
+		 polygons->m[1][i+1],
+		 polygons->m[0][i+2],
+		 polygons->m[1][i+2],
+		 s, c);
+      draw_line( polygons->m[0][i+2],
+		 polygons->m[1][i+2],
+		 polygons->m[0][i],
+		 polygons->m[1][i],
+		 s, c);
+
+      scan_line( polygons->m[0][i], polygons->m[1][i],
+		 polygons->m[0][i+1], polygons->m[1][i+1],
+		 polygons->m[0][i+2], polygons->m[1][i+2],
+		 s, c );
+      printf("performed scan line\n");
+    }
+  }
+}*/
+
 void draw_polygons( struct matrix *polygons, screen s, color c,  ) {
   
   int i;  
