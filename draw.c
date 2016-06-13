@@ -152,6 +152,7 @@ void scan_line( double x0, double y0,
     }
     draw_line( xL, yt, xR, yt, s, c ); 
   }
+}
 
 
 /*======== void draw_polygons() ==========
