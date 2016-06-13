@@ -40,7 +40,7 @@ void add_polygon( struct matrix *polygons,
 void scan_line( double x0, double y0,
 		double x1, double y1,
 		double x2, double y2, 
-		screen s, color c ) {
+		screen s, color c, struct matrix *zbuffer ) {
     
     double xt, xm, xb, yt, ym, yb, xL, xR, yL, yR;
     double d0, d1;
@@ -133,13 +133,13 @@ void scan_line( double x0, double y0,
   
     xR = xb;
     xL = xb;
-    draw_line( xL, yb, xR, yb, s, c );
+    draw_line( xL, yb, xR, yb, s, c, zbuffer );
   
     while ( yb <= ym ){
       xL += d0;
       xR += d1;
       yb += 1;
-      draw_line( xL, yb, xR, yb, s, c );
+      draw_line( xL, yb, xR, yb, s, c, zbuffer );
     }
 
     d1 = ( ( xt - xm ) / ( yt - ym ) );
@@ -147,10 +147,10 @@ void scan_line( double x0, double y0,
       xL += d0;
       xR += d1;
       ym += 1;
-      draw_line( xL, ym, xR, ym, s, c );
+      draw_line( xL, ym, xR, ym, s, c, zbuffer );
     }
 
-    draw_line( xL, yt, xR, yt, s, c ); 
+    draw_line( xL, yt, xR, yt, s, c, zbuffer ); 
 
 }
 
@@ -200,7 +200,7 @@ jdyrlandweaver
   }
 }*/
 
-void draw_polygons( struct matrix *polygons, screen s, color c,  ) {
+void draw_polygons( struct matrix *polygons, screen s, color c, struct matrix *zbuffer ) {
   
   int i;  
   for( i=0; i < polygons->lastcol-2; i+=3 ) {
@@ -212,22 +212,22 @@ void draw_polygons( struct matrix *polygons, screen s, color c,  ) {
 		 polygons->m[1][i],
 		 polygons->m[0][i+1],
 		 polygons->m[1][i+1],
-		 s, c);
+		 s, c, zbuffer );
       draw_line( polygons->m[0][i+1],
 		 polygons->m[1][i+1],
 		 polygons->m[0][i+2],
 		 polygons->m[1][i+2],
-		 s, c);
+		 s, c, zbuffer );
       draw_line( polygons->m[0][i+2],
 		 polygons->m[1][i+2],
 		 polygons->m[0][i],
 		 polygons->m[1][i],
-		 s, c);
+		 s, c, zbuffer );
 
       scan_line( polygons->m[0][i], polygons->m[1][i],
 		 polygons->m[0][i+1], polygons->m[1][i+1],
 		 polygons->m[0][i+2], polygons->m[1][i+2],
-		 s, c );
+		 s, c, zbuffer );
       printf("performed scan line\n");
     }
   }
