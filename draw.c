@@ -38,7 +38,7 @@ void add_polygon( struct matrix *polygons,
 
 
 
-/*void scan_line( double x0, double y0,
+void scan_line( double x0, double y0,
 		  double x1, double y1,
 		  double x2, double y2, 
 		  screen s, color c ) {
@@ -152,8 +152,7 @@ void add_polygon( struct matrix *polygons,
     }
     draw_line( xL, yt, xR, yt, s, c ); 
   }
-}*/
-
+}
 
 /*======== void draw_polygons() ==========
 Inputs:   struct matrix *polygons
@@ -167,7 +166,7 @@ triangles
 04/16/13 13:13:27
 jdyrlandweaver
 ====================*/
-/*void draw_polygons( struct matrix *polygons, screen s, color c ) {
+void draw_polygons( struct matrix *polygons, screen s, color c ) {
   
   int i;  
   for( i=0; i < polygons->lastcol-2; i+=3 ) {
@@ -199,136 +198,7 @@ jdyrlandweaver
     }
   }
 }
-*/
-void draw_polygons( struct matrix *polygons, screen s, color c ) {
-  int i,j;
-  double x0,y0,z0,x1,y1,z1,x2,y2,z2;
-  double topx,middlex,bottomx;
-  double topy,middley,bottomy;
-  double topz,middlez,bottomz;
-  // double s1,s2,slopez1,slopez2;
-  //double a,b,v,d,e;
-  double ** list;
-  list = (double**)malloc(3*sizeof(double*));
- 
-  
 
-  if ( polygons->lastcol < 3 ) {
-    printf("Need at least 3 points to draw a polygon!\n");
-    return;
-  }
-  printf("\n\n");
-  for( i=0; i < polygons->lastcol-2; i+=3 ) {
-    
-    if ( calculate_dot( polygons, i ) >= 0 ) {
-    //      printf("drawing polygon %d\n", i/3);    
-
-      c.green = rand() % 256;
-      c.red = rand() % 256;
-      c.blue = rand() % 256;
-
-      draw_line( polygons->m[0][i],
-		 polygons->m[1][i],
-		 polygons->m[2][i],
-		 polygons->m[0][i+1],
-		 polygons->m[1][i+1],
-		 polygons->m[2][i+1],
-                 s, c);
-      draw_line( polygons->m[0][i+1],
-		 polygons->m[1][i+1],
-		 polygons->m[2][i+1],
-		 polygons->m[0][i+2],
-		 polygons->m[1][i+2],
-		 polygons->m[2][i+2],
-		 s, c);
-      draw_line( polygons->m[0][i+2],
-		 polygons->m[1][i+2],
-		 polygons->m[2][i+2],
-		 polygons->m[0][i],
-		 polygons->m[1][i],
-		 polygons->m[2][i],
-		 s, c);
-      
-      j = 0;
-      while (j < 4) {
-	list[j] = (double*)malloc(3*sizeof(double));
-        j++;
-      }
-      
-      list[0][0] = polygons->m[0][i];
-      list[0][1] = polygons->m[1][i];
-      list[0][2] = polygons->m[2][i];
-      list[1][0] = polygons->m[0][i+1];
-      list[1][1] = polygons->m[1][i+1];
-      list[1][2] = polygons->m[2][i+1];
-      list[2][0] = polygons->m[0][i+2];
-      list[2][1] = polygons->m[1][i+2];
-      list[2][2] = polygons->m[2][i+2];
-    
-      double * temp;
-      temp = (double*)malloc(3*sizeof(double));
-
-      int m, n;
-      n = 0;
-
-      while (n < 2) {
-	 for (m = 0; m < 2; m++) {
-            if (list[m][1] < list[m+1][1]) {
-                temp[0] = list[m][0];
-                temp[1] = list[m][1];
-                temp[2] = list[m][2];
-                list[m][0] = list[m+1][0];
-                list[m][1] = list[m+1][1];
-                list[m][2] = list[m+1][2];
-                list[m+1][0] = temp[0];
-                list[m+1][1] = temp[1];
-                list[m+1][2] = temp[2];
-            }
-        }
-        n++;
-      }
-
-      topx = list[0][0];
-      topy = list[0][1];
-      topz = list[0][2];
-      middlex = list[1][0];
-      middley = list[1][1];
-      middlez = list[1][2];
-      bottomx = list[2][0];
-      bottomy = list[2][1];
-      bottomz = list[2][2];
-    
-      double yi = bottomy;
-      int q = 0;
-
-      while (yi <= middley) {
-	draw_line(bottomx + q*((middlex - bottomx)/(middley - bottomy)),
-		  bottomy + q,
-		  bottomz + q*((middlez - bottomz)/(middley - bottomy)),
-		  bottomx + q*((topx - bottomx)/(topy - bottomy)),
-		  bottomy + q,
-		  bottomz + q*((topz - bottomz)/(topy - bottomy)),
-		  s, c);
-	yi++;
-	q++;
-      }
-      int p = 0;
-      
-      while (yi < topy) {
-	draw_line(middlex + p*((topx - middlex)/(topy - middley)),
-		  bottomy + q,
-		  middlez + p*((topz - middlez)/(topy - middley)),
-		  bottomx + q*((topx - bottomx)/(topy - bottomy)),
-		  bottomy + q,
-		  bottomz + q*((topz - bottomz)/(topy - bottomy)),
-		  s, c);
-	p++;
-	q++;
-	yi++;
-      }
-    }
-  }
-}
 
 /*======== void add_sphere() ==========
   Inputs:   struct matrix * points
